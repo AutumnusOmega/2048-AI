@@ -15,6 +15,8 @@ if __name__ == '__main__':
 # calling start_game function
 # to initialize the matrix
 	mat = logic.start_game()
+	logic.print_board(mat)
+	score = 0
 
 while(True):
 
@@ -26,11 +28,13 @@ while(True):
 	if(x == 'W' or x == 'w'):
 
 		# call the move_up function
-		mat, flag = logic.move_up(mat)
+		mat, flag, score_change = logic.move_up(mat)
 
 		# get the current state and print it
 		status = logic.get_current_state(mat)
 		print(status)
+		score += score_change
+		print("Score:", score)
 
 		# if game not over then continue
 		# and add a new two
@@ -47,9 +51,11 @@ while(True):
 
 	# to move down
 	elif(x == 'S' or x == 's'):
-		mat, flag = logic.move_down(mat)
+		mat, flag, score_change = logic.move_down(mat)
 		status = logic.get_current_state(mat)
 		print(status)
+		score += score_change
+		print("Score:", score)
 		if(status == 'GAME NOT OVER'):
 			logic.add_new_2(mat)
 		else:
@@ -57,9 +63,11 @@ while(True):
 
 	# to move left
 	elif(x == 'A' or x == 'a'):
-		mat, flag = logic.move_left(mat)
+		mat, flag, score_change = logic.move_left(mat)
 		status = logic.get_current_state(mat)
 		print(status)
+		score += score_change
+		print("Score:", score)
 		if(status == 'GAME NOT OVER'):
 			logic.add_new_2(mat)
 		else:
@@ -67,9 +75,11 @@ while(True):
 
 	# to move right
 	elif(x == 'D' or x == 'd'):
-		mat, flag = logic.move_right(mat)
+		mat, flag, score_change = logic.move_right(mat)
 		status = logic.get_current_state(mat)
 		print(status)
+		score += score_change
+		print("Score:", score)
 		if(status == 'GAME NOT OVER'):
 			logic.add_new_2(mat)
 		else:
@@ -79,4 +89,4 @@ while(True):
 
 	# print the matrix after each
 	# move.
-	print(mat)
+	logic.print_board(mat)

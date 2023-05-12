@@ -9,6 +9,15 @@
 # numbers.
 import random
 
+
+def print_board(board, size=6):
+    line = "+" + "-" * size + "+" + "-" * size + "+" + "-" * size + "+" + "-" * size + "+"
+    print(line)
+    for row in board:
+        row_str = "|" + "".join("{:^{}}|".format(str(val) if val > 0 else "", size) for val in row)
+        print(row_str)
+        print(line)
+
 # function to initialize game / grid
 # at the start
 def start_game():
@@ -44,13 +53,13 @@ def add_new_2(mat):
 	# while loop will break as the
 	# random cell chosen will be empty
 	# (or contains zero)
-	while(mat[r] != 0):
+	while(mat[r][c] != 0):
 		r = random.randint(0, 3)
 		c = random.randint(0, 3)
 
 	# we will place a 2 at that empty
 	# random cell.
-	mat[r] = 2
+	mat[r][c] = 2
 
 # function to get the current
 # state of game
@@ -142,7 +151,7 @@ def compress(mat):
 def merge(mat):
 	
 	changed = False
-	
+	new_cell_val = 0
 	for i in range(4):
 		for j in range(3):
 
@@ -153,7 +162,8 @@ def merge(mat):
 
 				# double current cell value and
 				# empty the next cell
-				mat[i][j] = mat[i][j] * 2
+				new_cell_val = mat[i][j] * 2
+				mat[i][j] = new_cell_val
 				mat[i][j + 1] = 0
 
 				# make bool variable True indicating
@@ -161,7 +171,7 @@ def merge(mat):
 				# different.
 				changed = True
 
-	return mat, changed
+	return mat, changed, new_cell_val
 
 # function to reverse the matrix
 # means reversing the content of
@@ -178,12 +188,12 @@ def reverse(mat):
 # of matrix means interchanging
 # rows and column
 def transpose(mat):
-	new_mat = []
-	for i in range(4):
-		new_mat.append([])
-		for j in range(4):
-			new_mat[i].append(mat[j][i])
-	return new_mat
+    new_mat = []
+    for i in range(4):
+        new_mat.append([])
+        for j in range(4):
+            new_mat[i].append(mat[j][i])
+    return new_mat
 
 # function to update the matrix
 # if we move / swipe left
@@ -193,7 +203,7 @@ def move_left(grid):
 	new_grid, changed1 = compress(grid)
 
 	# then merge the cells.
-	new_grid, changed2 = merge(new_grid)
+	new_grid, changed2, score_change = merge(new_grid)
 	
 	changed = changed1 or changed2
 
@@ -203,7 +213,7 @@ def move_left(grid):
 	# return new matrix and bool changed
 	# telling whether the grid is same
 	# or different
-	return new_grid, changed
+	return new_grid, changed, score_change
 
 # function to update the matrix
 # if we move / swipe right
@@ -214,12 +224,12 @@ def move_right(grid):
 	new_grid = reverse(grid)
 
 	# then move left
-	new_grid, changed = move_left(new_grid)
+	new_grid, changed, score_change = move_left(new_grid)
 
 	# then again reverse matrix will
 	# give us desired result
 	new_grid = reverse(new_grid)
-	return new_grid, changed
+	return new_grid, changed, score_change
 
 # function to update the matrix
 # if we move / swipe up
@@ -231,12 +241,12 @@ def move_up(grid):
 
 	# then move left (calling all
 	# included functions) then
-	new_grid, changed = move_left(new_grid)
+	new_grid, changed, score_change = move_left(new_grid)
 
 	# again take transpose will give
 	# desired results
 	new_grid = transpose(new_grid)
-	return new_grid, changed
+	return new_grid, changed, score_change
 
 # function to update the matrix
 # if we move / swipe down
@@ -246,12 +256,12 @@ def move_down(grid):
 	new_grid = transpose(grid)
 
 	# move right and then again
-	new_grid, changed = move_right(new_grid)
+	new_grid, changed, score_change = move_right(new_grid)
 
 	# take transpose will give desired
 	# results.
 	new_grid = transpose(new_grid)
-	return new_grid, changed
+	return new_grid, changed, score_change
 
 # this file only contains all the logic
 # functions to be called in main function
